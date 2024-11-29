@@ -11,3 +11,6 @@ entry_text = None  # Переменная для хранения текста �
 
 def on_button_click(value):
     entry_text.set(entry_text.get() + value)
+    
+def on_clear():
+    entry_text.set("")  # Сбрасываем текст ввода
