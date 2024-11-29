@@ -38,3 +38,6 @@ def on_memory_add():
         entry_text.set("")  # Очищаем строку ввода
     except ValueError:
         entry_text.set("Error: Invalid input")  # Обработка некорректного ввода
+
+def on_memory_recall():
+    entry_text.set(str(memory.m_recall()))  # Устанавливаем значение памяти в ввод
