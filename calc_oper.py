@@ -53,3 +53,11 @@ def floor_value(a):
 
 def ceil_value(a):
     return math.ceil(a)
+
+def validate_decimal(value):
+    try:
+        # Попытка преобразовать значение в Decimal
+        return Decimal(value)
+    except (ValueError, TypeError, decimal.InvalidOperation):
+        # Бросаем исключение с понятным сообщением
+        raise ValueError("Invalid input: Please enter a valid number")
