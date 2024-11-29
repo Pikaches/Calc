@@ -102,3 +102,7 @@ def m_recall(self):
         """Возвращает текущее значение из памяти."""
         return self.memory
     
+def get_history(self):
+        """Получить историю операций с памятью."""
+        return self.history
+    
