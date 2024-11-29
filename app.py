@@ -18,3 +18,15 @@ def on_clear():
 def on_backspace():
     current_text = entry_text.get()
     entry_text.set(current_text[:-1])
+
+def on_equal():
+    try:
+        expression = entry_text.get().replace("^", "**")  # Заменяем ^ на **
+        result = eval(expression)  # Вычисляем результат выражения
+        entry_text.set(result)  # Отображаем результат
+    except ZeroDivisionError:
+        entry_text.set("Error: Division by zero")  # Обработка деления на ноль
+    except SyntaxError:
+        entry_text.set("Error: Invalid syntax")  # Обработка синтаксической ошибки
+    except Exception as e:
+        entry_text.set(f"Error: {e}")  # Обработка других исключений
