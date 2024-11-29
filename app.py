@@ -41,3 +41,7 @@ def on_memory_add():
 
 def on_memory_recall():
     entry_text.set(str(memory.m_recall()))  # Устанавливаем значение памяти в ввод
+
+def on_memory_clear():
+    memory.m_clear()  # Очищаем память
+    entry_text.set("")  # Очищаем строку ввода
