@@ -72,3 +72,9 @@ def m_add(self, value):
         value = validate_decimal(value)  # Валидация значения
         self.memory += value
         self.history.append(value)
+
+def m_subtract(self, value):
+        """Вычесть значение из памяти."""
+        value = validate_decimal(value)
+        self.memory -= value
+        self.history.append(-value)
