@@ -85,3 +85,10 @@ def m_multiply(self, value):
         self.memory *= value
         self.history.append(f"*{value}")
     
+def m_divide(self, value):
+        """Разделить значение в памяти."""
+        value = validate_decimal(value)
+        if value == 0:
+            raise ValueError("Cannot divide by zero in memory")
+        self.memory /= value
+        self.history.append(f"/{value}")
