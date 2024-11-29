@@ -30,3 +30,11 @@ def on_equal():
         entry_text.set("Error: Invalid syntax")  # Обработка синтаксической ошибки
     except Exception as e:
         entry_text.set(f"Error: {e}")  # Обработка других исключений
+
+def on_memory_add():
+    try:
+        value = float(entry_text.get())  # Получаем значение из ввода
+        memory.m_add(value)  # Добавляем значение в память
+        entry_text.set("")  # Очищаем строку ввода
+    except ValueError:
+        entry_text.set("Error: Invalid input")  # Обработка некорректного ввода
