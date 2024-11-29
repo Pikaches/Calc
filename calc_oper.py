@@ -63,29 +63,29 @@ def validate_decimal(value):
         raise ValueError("Invalid input: Please enter a valid number")
 
 class Memory:
-    def __init__(self):
+    def init(self):
         self.memory = Decimal(0)
         self.history = []
 
-def m_add(self, value):
+    def m_add(self, value):
         """Добавить значение в память."""
         value = validate_decimal(value)  # Валидация значения
         self.memory += value
         self.history.append(value)
 
-def m_subtract(self, value):
+    def m_subtract(self, value):
         """Вычесть значение из памяти."""
         value = validate_decimal(value)
         self.memory -= value
         self.history.append(-value)
 
-def m_multiply(self, value):
+    def m_multiply(self, value):
         """Умножить значение в памяти."""
         value = validate_decimal(value)
         self.memory *= value
         self.history.append(f"*{value}")
-    
-def m_divide(self, value):
+
+    def m_divide(self, value):
         """Разделить значение в памяти."""
         value = validate_decimal(value)
         if value == 0:
@@ -93,20 +93,20 @@ def m_divide(self, value):
         self.memory /= value
         self.history.append(f"/{value}")
 
-def m_clear(self):
+    def m_clear(self):
         """Очистить память."""
         self.memory = Decimal(0)
         self.history.clear()
-    
-def m_recall(self):
+
+    def m_recall(self):
         """Возвращает текущее значение из памяти."""
         return self.memory
-    
-def get_history(self):
+
+    def get_history(self):
         """Получить историю операций с памятью."""
         return self.history
-    
-def delete_last(self):
+
+    def delete_last(self):
         """Удалить последнюю операцию из памяти."""
         if self.history:
             last_value = self.history.pop()
@@ -121,4 +121,3 @@ def delete_last(self):
                     self.memory *= value
         else:
             raise ValueError("No items in memory to delete")
-            
