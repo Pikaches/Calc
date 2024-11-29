@@ -45,3 +45,18 @@ def on_memory_recall():
 def on_memory_clear():
     memory.m_clear()  # Очищаем память
     entry_text.set("")  # Очищаем строку ввода
+
+def start_calculator():
+    global entry_text
+    window = tk.Tk()  # Создаем главное окно приложения
+    window.title("Calculator")  # Устанавливаем заголовок окна
+    window.geometry("400x600")  # Устанавливаем размеры окна
+    window.configure(bg="#282c34")  # Устанавливаем темный фон
+
+    entry_text = tk.StringVar()  # Инициализируем переменную для текста ввода
+
+    entry = tk.Entry(
+        window, textvariable=entry_text, font=('Arial', 24),
+        bd=10, relief="flat", justify="right", bg="#1e2227", fg="#ffffff"
+    )
+    entry.grid(row=0, column=0, columnspan=4, pady=(10, 20), padx=10, sticky="nsew")
