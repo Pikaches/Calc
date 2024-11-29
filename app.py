@@ -67,3 +67,34 @@ def start_calculator():
               foreground=[('pressed', '#282c34'), ('active', '#ffffff')],
               background=[('pressed', '#61afef'), ('active', '#61afef')])
 
+    buttons = [  # Определение кнопок калькулятора и их расположение
+        ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
+        ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('*', 2, 3),
+        ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
+        ('0', 4, 0), ('.', 4, 1), ('=', 4, 2), ('+', 4, 3),
+        ('MC', 5, 0), ('MR', 5, 1), ('M+', 5, 2), ('M-', 5, 3),
+        ('Clear', 6, 0), ('C', 6, 1), ('←', 6, 2), ('%', 6, 3)
+    ]
+
+    for (text, row, col) in buttons: 
+        command = (
+            on_equal if text == "=" else
+            on_clear if text == "C" or text == "Clear" else
+            on_memory_clear if text == "MC" else
+            on_memory_recall if text == "MR" else
+            on_memory_add if text == "M+" else
+            on_memory_subtract if text == "M-" else
+            on_backspace if text == "←" else
+            lambda t=text: on_button_click(t)  
+        )
+        ttk.Button(window, text=text, command=command).grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
+
+    for i in range(7):  
+        window.grid_rowconfigure(i, weight=1)  
+    for i in range(4):  
+        window.grid_columnconfigure(i, weight=1)
+
+    window.mainloop()   # Запуск главного цикла приложения
+
+if __name__ == "__main__":
+    start_calculator()   # Запуск калькулятора при исполнении скрипта
