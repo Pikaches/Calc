@@ -61,3 +61,8 @@ def validate_decimal(value):
     except (ValueError, TypeError, decimal.InvalidOperation):
         # Бросаем исключение с понятным сообщением
         raise ValueError("Invalid input: Please enter a valid number")
+
+class Memory:
+    def __init__(self):
+        self.memory = Decimal(0)
+        self.history = []
