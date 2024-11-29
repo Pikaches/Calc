@@ -28,3 +28,8 @@ def modulus(a, b):
     a = validate_decimal(a)
     b = validate_decimal(b)
     return a % b
+
+def power(a, b):
+    a = validate_decimal(a)
+    b = validate_decimal(b)
+    return a ** b
