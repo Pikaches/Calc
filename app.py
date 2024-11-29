@@ -14,3 +14,7 @@ def on_button_click(value):
     
 def on_clear():
     entry_text.set("")  # Сбрасываем текст ввода
+    
+def on_backspace():
+    current_text = entry_text.get()
+    entry_text.set(current_text[:-1])
