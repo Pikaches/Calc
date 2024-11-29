@@ -1,5 +1,5 @@
 import unittest
-from calc_operations import addition, subtraction, multiplication, division, modulus, power, square_root, sine, cosine, Memory
+from calc_oper import addition, subtraction, multiplication, division, modulus, power, square_root, sine, cosine, Memory
 
 class TestCalcOperations(unittest.TestCase):
 
