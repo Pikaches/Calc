@@ -92,3 +92,9 @@ def m_divide(self, value):
             raise ValueError("Cannot divide by zero in memory")
         self.memory /= value
         self.history.append(f"/{value}")
+
+def m_clear(self):
+        """Очистить память."""
+        self.memory = Decimal(0)
+        self.history.clear()
+    
