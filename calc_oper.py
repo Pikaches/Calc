@@ -106,3 +106,19 @@ def get_history(self):
         """Получить историю операций с памятью."""
         return self.history
     
+def delete_last(self):
+        """Удалить последнюю операцию из памяти."""
+        if self.history:
+            last_value = self.history.pop()
+            if isinstance(last_value, Decimal):
+                self.memory -= last_value
+            elif isinstance(last_value, str):
+                operator = last_value[0]
+                value = Decimal(last_value[1:])
+                if operator == "*":
+                    self.memory /= value
+                elif operator == "/":
+                    self.memory *= value
+        else:
+            raise ValueError("No items in memory to delete")
+            
