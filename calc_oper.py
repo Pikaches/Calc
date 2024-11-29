@@ -33,3 +33,9 @@ def power(a, b):
     a = validate_decimal(a)
     b = validate_decimal(b)
     return a ** b
+
+def square_root(a):
+    a = validate_decimal(a)
+    if a < 0:
+        raise ValueError("Cannot take square root of a negative number")
+    return a.sqrt()
