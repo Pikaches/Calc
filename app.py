@@ -60,3 +60,10 @@ def start_calculator():
         bd=10, relief="flat", justify="right", bg="#1e2227", fg="#ffffff"
     )
     entry.grid(row=0, column=0, columnspan=4, pady=(10, 20), padx=10, sticky="nsew")
+    
+    style = ttk.Style()  # Настройка стиля для кнопок
+    style.configure("TButton", font=('Arial', 14), padding=10)
+    style.map("TButton",
+              foreground=[('pressed', '#282c34'), ('active', '#ffffff')],
+              background=[('pressed', '#61afef'), ('active', '#61afef')])
+
