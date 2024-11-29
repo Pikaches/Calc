@@ -63,7 +63,8 @@ def validate_decimal(value):
         raise ValueError("Invalid input: Please enter a valid number")
 
 class Memory:
-    def init(self):
+    def __init__(self):
+        """Инициализация атрибутов памяти и истории операций."""
         self.memory = Decimal(0)
         self.history = []
 
