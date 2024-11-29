@@ -98,3 +98,7 @@ def m_clear(self):
         self.memory = Decimal(0)
         self.history.clear()
     
+def m_recall(self):
+        """Возвращает текущее значение из памяти."""
+        return self.memory
+    
