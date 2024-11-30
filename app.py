@@ -11,72 +11,82 @@ entry_text = None
 
 
 def on_button_click(value):
-    entry_text.set(entry_text.get() + value)
+    entry_text.insert(tk.END, value)  # Добавление значения в поле ввода
 
 
 def on_clear():
-    entry_text.set("")  # Очищает строку
+    entry_text.delete("1.0", tk.END)  # Очищает поле
 
 
 def on_backspace():
-    current_text = entry_text.get()
-    entry_text.set(current_text[:-1])
+    current_text = entry_text.get("1.0", tk.END).strip()
+    entry_text.delete("1.0", tk.END)  # Удаляем всё
+    entry_text.insert(tk.END, current_text[:-1])  # Удаляем последний символ
 
+
+from sympy import sympify
 
 def on_equal():
     try:
-        expression = entry_text.get().replace("^", "**")
-        result = eval(expression)
-        entry_text.set(result)
-    except ZeroDivisionError:
-        entry_text.set("Error: Division by zero")
-    except SyntaxError:
-        entry_text.set("Error: Invalid syntax")
+        # Получаем выражение из текстового поля
+        expression = entry_text.get().replace("^", "**")  # Преобразуем "^" в "**"
+        result = sympify(expression)  # Вычисляем выражение
+        entry_text.set(result)  # Устанавливаем результат
     except Exception as e:
-        entry_text.set(f"Error: {e}")
+        entry_text.set(f"Error: {e}")  # Отображаем ошибку
+
 
 
 def on_memory_add():
     try:
-        value = float(entry_text.get())
+        value = float(entry_text.get("1.0", tk.END).strip())
         memory.m_add(value)
-        entry_text.set("")
+        entry_text.delete("1.0", tk.END)
     except ValueError:
-        entry_text.set("Error: Invalid input")
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, "Ошибка: неверный ввод")  # Ошибка ввода
 
 
 def on_memory_subtract():
     try:
-        value = float(entry_text.get())
+        value = float(entry_text.get("1.0", tk.END).strip())
         memory.m_subtract(value)
-        entry_text.set("")
+        entry_text.delete("1.0", tk.END)
     except ValueError:
-        entry_text.set("Error: Invalid input")
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, "Ошибка: неверный ввод")  # Ошибка ввода
 
 
 def on_memory_recall():
-    entry_text.set(str(memory.m_recall()))
+    entry_text.delete("1.0", tk.END)
+    entry_text.insert(tk.END, str(memory.m_recall()))  # Отображение значения из памяти
 
 
 def on_memory_clear():
-    memory.m_clear()
-    entry_text.set("")
+    memory.m_clear()  # Очистка памяти
+    entry_text.delete("1.0", tk.END)
 
 
 def start_calculator():
     global entry_text
     window = tk.Tk()
-    window.title("Calculator")
-    window.geometry("400x600")
+    window.title("Калькулятор")
+    window.geometry("752x600")
     window.configure(bg="#282c34")  # Устанавливаем темный фон
 
-    entry_text = tk.StringVar()
+    frame = tk.Frame(window, bg="#282c34")
+    frame.grid(row=0, column=0, columnspan=4, padx=10, pady=(10, 20), sticky="nsew")
 
-    entry = tk.Entry(
-        window, textvariable=entry_text, font=('Arial', 24),
-        bd=10, relief="flat", justify="right", bg="#1e2227", fg="#ffffff"
+    # Добавляем текстовое поле с полосой прокрутки
+    entry_text = tk.Text(
+        frame, font=('Arial', 24), bd=10, relief="flat",
+        height=2, bg="#1e2227", fg="#ffffff", wrap="none"
     )
-    entry.grid(row=0, column=0, columnspan=4, pady=(10, 20), padx=10, sticky="nsew")
+    entry_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    scrollbar = tk.Scrollbar(frame, orient="horizontal", command=entry_text.xview)
+    scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+    entry_text.configure(xscrollcommand=scrollbar.set)
 
     style = ttk.Style()
     style.configure("TButton", font=('Arial', 14), padding=10)
@@ -90,13 +100,13 @@ def start_calculator():
         ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
         ('0', 4, 0), ('.', 4, 1), ('=', 4, 2), ('+', 4, 3),
         ('MC', 5, 0), ('MR', 5, 1), ('M+', 5, 2), ('M-', 5, 3),
-        ('Clear', 6, 0), ('C', 6, 1), ('←', 6, 2), ('%', 6, 3)
+        ('C', 6, 0), ('←', 6, 1), ('%', 6, 2)
     ]
 
     for (text, row, col) in buttons:
         command = (
             on_equal if text == "=" else
-            on_clear if text == "C" or text == "Clear" else
+            on_clear if text == "C" else
             on_memory_clear if text == "MC" else
             on_memory_recall if text == "MR" else
             on_memory_add if text == "M+" else
