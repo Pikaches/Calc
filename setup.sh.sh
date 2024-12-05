@@ -1,63 +1,79 @@
 #!/bin/bash
 
-# Проверка аргументов
+# РџСЂРѕРІРµСЂРєР° Р°СЂРіСѓРјРµРЅС‚РѕРІ
 if [ -z "$1" ]; then
-  echo "Не введен первый параметр, отвечающий за путь до директории с исходниками";
+  echo "РќРµ РІРІРµРґРµРЅ РїРµСЂРІС‹Р№ РїР°СЂР°РјРµС‚СЂ, РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РїСѓС‚СЊ РґРѕ РґРёСЂРµРєС‚РѕСЂРёРё СЃ РёСЃС…РѕРґРЅРёРєР°РјРё"
   exit 1
 fi
 
 if [ -z "$2" ]; then
-  echo "Не введен второй параметр, отвечающий за версию проекта";
+  echo "РќРµ РІРІРµРґРµРЅ РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ, РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РІРµСЂСЃРёСЋ РїСЂРѕРµРєС‚Р°"
   exit 1
 fi
 
-# Установка переменных
+# РЈСЃС‚Р°РЅРѕРІРєР° РїРµСЂРµРјРµРЅРЅС‹С…
 srcdir=$1
 version=$2
-projname="CalculatorApp"  # Название проекта
-outputdir="$srcdir/dist"  # Каталог, куда будет собран исполняемый файл
+projname="CalculatorApp"  # РќР°Р·РІР°РЅРёРµ РїСЂРѕРµРєС‚Р°
+builddir="$srcdir/build"  # РљР°С‚Р°Р»РѕРі РґР»СЏ СЃР±РѕСЂРєРё deb
+debdir="$builddir/$projname-$version"  # РљР°С‚Р°Р»РѕРі СЃС‚СЂСѓРєС‚СѓСЂС‹ deb РїР°РєРµС‚Р°
+outputdir="$srcdir"       # РљР°С‚Р°Р»РѕРі, РєСѓРґР° Р±СѓРґРµС‚ СЃРѕР±СЂР°РЅ deb С„Р°Р№Р»
 
-# Печать путей для отладки
-echo "Исходная директория: ${srcdir}"
-echo "Название проекта: ${projname}"
-echo "Версия: ${version}"
+echo "РСЃС…РѕРґРЅР°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ: $srcdir"
+echo "РќР°Р·РІР°РЅРёРµ РїСЂРѕРµРєС‚Р°: $projname"
+echo "Р’РµСЂСЃРёСЏ: $version"
 
-# Шаг 1: Проверка наличия необходимых инструментов
-echo "Проверка наличия необходимых инструментов..."
-for cmd in git pyinstaller python; do
-  if ! command -v $cmd &> /dev/null; then
-    echo "Ошибка: $cmd не установлен. Установите его перед запуском скрипта."
+# РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РЅРµРѕР±С…РѕРґРёРјС‹С… РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ
+echo "РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РЅРµРѕР±С…РѕРґРёРјС‹С… РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ..."
+for cmd in git pyinstaller dpkg-deb; do
+  if ! command -v $cmd &>/dev/null; then
+    echo "РћС€РёР±РєР°: $cmd РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ. РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РµРіРѕ РїРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј СЃРєСЂРёРїС‚Р°."
     exit 1
   fi
 done
 
-# Шаг 2: Обновление репозитория
-cd "$srcdir" || exit
-if git rev-parse --is-inside-work-tree &> /dev/null; then
-  echo "Обновление репозитория..."
-  git pull origin main
-else
-  echo "Предупреждение: каталог $srcdir не является Git-репозиторием. Пропуск обновления."
-fi
+# РЁР°Рі 1: РћР±РЅРѕРІР»РµРЅРёРµ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ
+cd $srcdir || exit
+git pull origin main
 
-# Шаг 3: Сборка исполняемого файла с помощью PyInstaller
-echo "Создание исполняемого файла с помощью PyInstaller..."
-pyinstaller --onefile --distpath "$outputdir" --name "$projname" main.py
+# РЁР°Рі 2: РЎР±РѕСЂРєР° РёСЃРїРѕР»РЅСЏРµРјРѕРіРѕ С„Р°Р№Р»Р° СЃ РїРѕРјРѕС‰СЊСЋ PyInstaller
+echo "РЎРѕР·РґР°РЅРёРµ РёСЃРїРѕР»РЅРёРјРѕРіРѕ С„Р°Р№Р»Р° СЃ РїРѕРјРѕС‰СЊСЋ PyInstaller..."
+pyinstaller --onefile --distpath "$builddir" --name "$projname" main.py
 
-# Проверка, был ли создан исполняемый файл
-if [ ! -f "$outputdir/$projname" ]; then
-  echo "Ошибка: исполняемый файл не был создан!"
+if [ ! -f "$builddir/$projname" ]; then
+  echo "РћС€РёР±РєР°: РёСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р» РЅРµ Р±С‹Р» СЃРѕР·РґР°РЅ!"
   exit 1
 fi
 
-echo "Исполняемый файл создан: $outputdir/$projname"
+echo "РСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р» СЃРѕР·РґР°РЅ: $builddir/$projname"
 
-# Шаг 4: Запуск юнит-тестов
-echo "Запуск юнит-тестов..."
-python -m unittest discover -s "$srcdir" -p '*test.py'
+# РЁР°Рі 3: РЎРѕР·РґР°РЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР»СЏ deb РїР°РєРµС‚Р°
+echo "РЎРѕР·РґР°РЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ deb РїР°РєРµС‚Р°..."
+mkdir -p "$debdir/DEBIAN" "$debdir/usr/local/bin"
 
-# Шаг 5: Создание архива с проектом (опционально)
-echo "Создание архива с проектом..."
-tar -czvf "$outputdir/${projname}_v${version}.tar.gz" -C "$outputdir" "$projname"
+# Р¤Р°Р№Р» control
+cat <<EOF >"$debdir/DEBIAN/control"
+Package: $projname
+Version: $version
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Your Name <your.email@example.com>
+Description: $projname - РїСЂРѕСЃС‚РѕР№ РєР°Р»СЊРєСѓР»СЏС‚РѕСЂ
+EOF
 
-echo "Процесс завершен успешно."
+# РџРµСЂРµРјРµС‰РµРЅРёРµ С„Р°Р№Р»Р°
+cp "$builddir/$projname" "$debdir/usr/local/bin/$projname"
+
+# РЁР°Рі 4: РЎР±РѕСЂРєР° deb РїР°РєРµС‚Р°
+echo "РЎР±РѕСЂРєР° deb РїР°РєРµС‚Р°..."
+dpkg-deb --build "$debdir"
+
+if [ ! -f "$debdir.deb" ]; then
+  echo "РћС€РёР±РєР°: deb РїР°РєРµС‚ РЅРµ Р±С‹Р» СЃРѕР·РґР°РЅ!"
+  exit 1
+fi
+
+# РџРµСЂРµРјРµС‰РµРЅРёРµ РїР°РєРµС‚Р° РІ РёСЃС…РѕРґРЅСѓСЋ РґРёСЂРµРєС‚РѕСЂРёСЋ
+mv "$debdir.deb" "$outputdir/${projname}_${version}.deb"
+echo "DEB РїР°РєРµС‚ СЃРѕР·РґР°РЅ: $outputdir/${projname}_${version}.deb"
