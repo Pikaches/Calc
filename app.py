@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk  # Для более современного стиля кнопок
+from tkinter import ttk
 from calc_oper import (
     addition, subtraction, multiplication, division, modulus, power,
     square_root, sine, cosine, floor_value, ceil_value,
@@ -8,6 +8,8 @@ from calc_oper import Memory
 
 memory = Memory()
 entry_text = None
+binary_label = None
+octal_label = None
 
 
 def on_button_click(value):
@@ -16,6 +18,9 @@ def on_button_click(value):
 
 def on_clear():
     entry_text.delete("1.0", tk.END)  # Очищает поле
+    if binary_label and octal_label:
+        binary_label.config(text="")
+        octal_label.config(text="")
 
 
 def on_backspace():
@@ -24,17 +29,26 @@ def on_backspace():
     entry_text.insert(tk.END, current_text[:-1])  # Удаляем последний символ
 
 
-from sympy import sympify
-
 def on_equal():
     try:
-        # Получаем выражение из текстового поля
-        expression = entry_text.get().replace("^", "**")  # Преобразуем "^" в "**"
-        result = sympify(expression)  # Вычисляем выражение
-        entry_text.set(result)  # Устанавливаем результат
-    except Exception as e:
-        entry_text.set(f"Error: {e}")  # Отображаем ошибку
+        expression = entry_text.get("1.0", tk.END).strip()
+        allowed_chars = "0123456789+-*/().%"
+        if not all(char in allowed_chars for char in expression):
+            raise ValueError("Недопустимые символы в выражении")
+        result = eval(expression)
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, result)
 
+        if binary_label and octal_label:
+            binary_label.config(text=f"Бинарное: {bin(int(result))[2:]}")
+            octal_label.config(text=f"Октальное: {oct(int(result))[2:]}")
+
+    except ZeroDivisionError:
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, "Ошибка: деление на ноль")
+    except Exception as e:
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, f"Ошибка: {e}")
 
 
 def on_memory_add():
@@ -67,8 +81,22 @@ def on_memory_clear():
     entry_text.delete("1.0", tk.END)
 
 
+def on_system_conversion():
+    try:
+        expression = entry_text.get("1.0", tk.END).strip()
+        result = eval(expression)
+
+        # Переводим результат в двоичную и восьмиричную системы
+        if binary_label and octal_label:
+            binary_label.config(text=f"Бинарное: {bin(int(result))[2:]}")
+            octal_label.config(text=f"Октальное: {oct(int(result))[2:]}")
+    except Exception as e:
+        entry_text.delete("1.0", tk.END)
+        entry_text.insert(tk.END, f"Ошибка: {e}")  # Общая ошибка
+
+
 def start_calculator():
-    global entry_text
+    global entry_text, binary_label, octal_label
     window = tk.Tk()
     window.title("Калькулятор")
     window.geometry("752x600")
@@ -100,7 +128,7 @@ def start_calculator():
         ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
         ('0', 4, 0), ('.', 4, 1), ('=', 4, 2), ('+', 4, 3),
         ('MC', 5, 0), ('MR', 5, 1), ('M+', 5, 2), ('M-', 5, 3),
-        ('C', 6, 0), ('←', 6, 1), ('%', 6, 2)
+        ('C', 6, 0), ('←', 6, 1), ('%', 6, 2), ('СС', 6, 3),
     ]
 
     for (text, row, col) in buttons:
@@ -112,9 +140,17 @@ def start_calculator():
             on_memory_add if text == "M+" else
             on_memory_subtract if text == "M-" else
             on_backspace if text == "←" else
+            on_system_conversion if text == "СС" else
             lambda t=text: on_button_click(t)
         )
         ttk.Button(window, text=text, command=command).grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
+
+    # Метки для отображения перевода
+    binary_label = tk.Label(window, text="", font=("Arial", 14), fg="#ffffff", bg="#282c34")
+    binary_label.grid(row=7, column=0, columnspan=4, padx=5, pady=5)
+
+    octal_label = tk.Label(window, text="", font=("Arial", 14), fg="#ffffff", bg="#282c34")
+    octal_label.grid(row=8, column=0, columnspan=4, padx=5, pady=5)
 
     for i in range(7):
         window.grid_rowconfigure(i, weight=1)
